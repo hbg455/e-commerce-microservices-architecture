@@ -11,7 +11,7 @@ public interface ProductMappingHelper {
                 .productId(product.getProductId())
                 .productTitle(product.getProductTitle())
                 .imageUrl(product.getImageUrl())
-                .sku(product.getSku())
+                .sku(product.getSkuCode())
                 .priceUnit(product.getPriceUnit())
                 .quantity(product.getQuantity())
                 .categoryDto(
@@ -28,7 +28,7 @@ public interface ProductMappingHelper {
                 .productId(productDto.getProductId())
                 .productTitle(productDto.getProductTitle())
                 .imageUrl(productDto.getImageUrl())
-                .sku(productDto.getSku())
+                .skuCode(productDto.getSku())
                 .priceUnit(productDto.getPriceUnit())
                 .quantity(productDto.getQuantity())
                 .category(

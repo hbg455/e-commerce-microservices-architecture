@@ -15,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"category"})
 @Data
-@SuperBuilder
+@Builder
 public class Product extends AbstractMappedEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,7 +33,7 @@ public class Product extends AbstractMappedEntity implements Serializable {
 
     @Column(unique = true)
     //stock keeping units
-    private String sku;
+    private String skuCode;
 
     @Column(name = "price_unit", columnDefinition = "decimal")
     private Double priceUnit;

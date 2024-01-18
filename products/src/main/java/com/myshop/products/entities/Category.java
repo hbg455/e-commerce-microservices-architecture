@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, exclude = {"subCategories", "parentCategory", "products"})
 @Data
-@SuperBuilder
+@Builder
 public class Category extends AbstractMappedEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;

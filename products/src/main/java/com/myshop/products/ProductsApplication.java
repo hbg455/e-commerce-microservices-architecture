@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 
-public class products {
+public class ProductsApplication {
     public static void main(String[] args) {
-        SpringApplication.run(products.class,args);
+        SpringApplication.run(ProductsApplication.class,args);
     }}
