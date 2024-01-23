@@ -1,7 +1,11 @@
 package com.myshop.order.services;
 
+import com.myshop.commonDtos.dto.OrderRequestDto;
+import com.myshop.commonDtos.events.OrderEvent;
+import com.myshop.commonDtos.events.OrderStatus;
 import com.myshop.order.dto.OrderDto;
 import com.myshop.order.entities.Order;
+import com.myshop.order.entities.OrderLine;
 import com.myshop.order.event.StockEvent;
 import com.myshop.order.exceptions.OrderRepository;
 import com.myshop.order.helper.OrderMappingHelper;
@@ -30,31 +34,29 @@ public class OrderServiceImpl {
 
     private final OrderRepository orderRepository ;
 
+    private final OrderStatusPublisher orderStatusPublisher;
+
 
     public OrderDto save(OrderDto orderDto) {
         log.info("*** OrderDto, service; save order *");
         Order order = OrderMappingHelper.mapToOrder(orderDto);
         order.setCreatedAt(Instant.now());
         //kafkaTemplate.send("Pstock-check-events"  ,orderDto.getOrderNumber());
-        List<StockEvent> stockEventList = order.getOrderLineItemsList().stream().map
-                (l -> StockEvent.builder()
+        List<OrderRequestDto> orderRequestDtoList = order.getOrderLineItemsList().stream().map
+                (l -> OrderRequestDto.builder()
+                        .orderId(l.getOrderLineId())
                         .skuCode(l.getSkuCode())
-                        .quantity(l.getQuantity())
+                        .amount(l.getQuantity())
                         .build()).collect(Collectors.toList());
-        for ( StockEvent s :stockEventList
-             ) {
-            Message<StockEvent> message = MessageBuilder
-                    .withPayload(s)
-                    .setHeader(KafkaHeaders.TOPIC ,"Pstock-check-events" )
-                    .build();
-            log.info(format("sending message to stock-stream Topic::%s",message.getPayload()));
+        for ( OrderRequestDto requestDto :orderRequestDtoList) {
 
-            order.getOrderLineItemsList().forEach( l-> kafkaTemplate.send(message));
+            orderStatusPublisher.publishOrderEvent(requestDto, OrderStatus.ORDER_CREATED);
 
-
+            log.info(format("sending message to stock-stream Topic::%s",requestDto.toString()));
         }
         orderRepository.save(order);
         return orderDto;
     }
+
 
 }

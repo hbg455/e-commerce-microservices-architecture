@@ -3,11 +3,13 @@ server:
 spring:
   application:
     name: orders
-  kafka:
-    producer:
-      bootstrap-servers: localhost:9092
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  cloud:
+    stream:
+      function:
+        definition: orderSupplier
+      bindings:
+        orderSupplier-out-0:
+          destination: order-event
   datasource:
     password: password
     url: jdbc:postgresql://localhost:5432/users

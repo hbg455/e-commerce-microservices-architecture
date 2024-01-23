@@ -17,7 +17,7 @@ public interface OrderMappingHelper {
                 .collect(Collectors.toList());
 
         return Order.builder()
-                .OrderId(orderDto.getOrderId())
+                .orderId(orderDto.getOrderId())
                 .orderNumber(orderDto.getOrderNumber())
                 .orderLineItemsList( orderLines)
                 .build();
@@ -25,7 +25,7 @@ public interface OrderMappingHelper {
 
     private static OrderLine mapOrderLine(OrderLineDto orderLineDTO) {
         return OrderLine.builder()
-                .OrderLineId(orderLineDTO.getOrderLineId())
+                .orderLineId(orderLineDTO.getOrderLineId())
                 .skuCode(orderLineDTO.getSkuCode())
                 .price(orderLineDTO.getPrice())
                 .quantity(orderLineDTO.getQuantity())
@@ -38,7 +38,7 @@ public interface OrderMappingHelper {
                 .collect(Collectors.toList());
 
         return OrderDto.builder()
-                .OrderId(order.getOrderId())
+                .orderId(order.getOrderId())
                 .orderNumber(order.getOrderNumber())
                 .orderLineItemsList(orderLineDTOs)
                 .build();
@@ -46,7 +46,7 @@ public interface OrderMappingHelper {
 
     private static OrderLineDto mapOrderLineToDto(OrderLine orderLine) {
         return OrderLineDto.builder()
-                .OrderLineId(orderLine.getOrderLineId())
+                .orderLineId(orderLine.getOrderLineId())
                 .skuCode(orderLine.getSkuCode())
                 .price(orderLine.getPrice())
                 .quantity(orderLine.getQuantity())

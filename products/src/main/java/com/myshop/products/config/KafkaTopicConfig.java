@@ -8,10 +8,5 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Bean
-    public NewTopic stockCheckTopic(){
-        return TopicBuilder
-                .name("stock-check-events")
-                .build();
-    }
+
 }

@@ -24,7 +24,7 @@ public class OrderLine extends AbstractMappedEntity implements Serializable  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_line_id", unique = true, nullable = false, updatable = false)
-    private Long OrderLineId;
+    private Integer orderLineId;
 
     @Column(name = "sku_code")
     private String skuCode;

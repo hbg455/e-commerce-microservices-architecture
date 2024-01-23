@@ -1,6 +1,5 @@
 package com.myshop.order.dto;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +17,7 @@ public class OrderLineDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Long OrderLineId;
+    private Integer orderLineId;
 
     private String skuCode;
 

@@ -2,14 +2,16 @@ package com.myshop.products.services.Impl;
 
 import com.myshop.products.dto.ProductDto;
 import com.myshop.products.entities.Product;
-import com.myshop.products.event.StockCheckEvent;
+import com.myshop.products.event.StockEvent;
 import com.myshop.products.helper.ProductMappingHelper;
 import com.myshop.products.repositories.ProductRepository;
 import com.myshop.products.services.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -76,12 +78,14 @@ public class ProductServiceImpl implements ProductService {
         return true;
     }
 
-    public void publishStockCheckEvent(Integer productId) {
-        // Publish a stock check event to Kafka
+//    public void publishStockCheckEvent(Integer productId) {
+//        // Publish a stock check event to Kafka
+//
+//        log.info(format("sending message to check-Stock-stream Topic::%s",productId));
+//
+//        kafkaTemplate.send("stock-check-events", StockCheckEvent.builder().productId(productId).build());
+//
+//    }
 
-        log.info(format("sending message to check-Stock-stream Topic::%s",productId));
 
-        kafkaTemplate.send("stock-check-events", StockCheckEvent.builder().productId(productId).build());
-
-    }
 }
