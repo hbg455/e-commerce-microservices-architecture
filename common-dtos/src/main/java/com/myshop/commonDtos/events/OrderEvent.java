@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
 @NoArgsConstructor
 @Data
-public class OrderEvent implements Event {
-
+public class OrderEvent implements Event , Serializable {
+    private static final long serialVersionUID = 1L;
     private UUID eventId = UUID.randomUUID();
     private Date eventDate = new Date();
     private OrderRequestDto orderRequestDto;

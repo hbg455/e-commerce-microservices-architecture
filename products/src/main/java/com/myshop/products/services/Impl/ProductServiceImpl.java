@@ -1,21 +1,24 @@
 package com.myshop.products.services.Impl;
 
+import com.myshop.commonDtos.dto.OrderRequestDto;
+import com.myshop.commonDtos.dto.StockRequestDto;
+import com.myshop.commonDtos.events.OrderEvent;
+import com.myshop.commonDtos.events.StockAvailabilityStatus;
+import com.myshop.commonDtos.events.StockEvent;
 import com.myshop.products.dto.ProductDto;
 import com.myshop.products.entities.Product;
-import com.myshop.products.event.StockEvent;
 import com.myshop.products.helper.ProductMappingHelper;
 import com.myshop.products.repositories.ProductRepository;
 import com.myshop.products.services.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -28,22 +31,24 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     public List<ProductDto> findAll() {
         log.info("*** ProductDto List, service; fetch all products *");
 
-        return  productRepository.findAll()
+        return productRepository.findAll()
                 .stream()
-                .map( ProductMappingHelper::map)
+                .map(ProductMappingHelper::map)
                 .distinct()
                 .collect(Collectors.toUnmodifiableList());
     }
 
     @Override
     public ProductDto findById(Integer productId) {
-        return null;
+        log.info("*** ProductDto, service; fetch product by id *");
+        return this.productRepository.findBySkuCode("fedi")
+                .map(ProductMappingHelper::map)
+                .orElseThrow(() -> new RuntimeException(String.format("Product with id: %d not found", productId)));
     }
 
     @Override
@@ -69,23 +74,31 @@ public class ProductServiceImpl implements ProductService {
     public void deleteById(Integer productId) {
 
     }
-    public boolean isProductAvailable(Integer productId) {
-        // Logic to check if the product is available
-        // You can use the existing method or add additional logic as needed
-        // ...
 
-        // For now, let's assume the product is available
-        return true;
+
+    public StockEvent newOrderEvent(OrderEvent orderEvent) {
+        OrderRequestDto orderRequestDto = orderEvent.getOrderRequestDto();
+
+        StockRequestDto stockRequestDto = StockRequestDto.builder()
+                .skuCode(orderRequestDto.getSkuCode())
+                .amount(orderRequestDto.getAmount())
+                .orderId(orderRequestDto.getOrderId())
+                .build();
+
+
+        return productRepository.findBySkuCode(orderRequestDto.getSkuCode())
+                .filter(p -> p.getQuantity() > orderRequestDto.getAmount())
+                .map(p -> {
+                    p.setQuantity(p.getQuantity() - orderRequestDto.getAmount());
+                    productRepository.save(p);
+                    log.info("*** StockEvent, service; StockEvent ***", p);
+                    return new StockEvent(stockRequestDto, StockAvailabilityStatus.AVAILABLE);
+                }).orElse(new StockEvent(stockRequestDto, StockAvailabilityStatus.OUT_OF_STOCK));
+
+
     }
 
-//    public void publishStockCheckEvent(Integer productId) {
-//        // Publish a stock check event to Kafka
-//
-//        log.info(format("sending message to check-Stock-stream Topic::%s",productId));
-//
-//        kafkaTemplate.send("stock-check-events", StockCheckEvent.builder().productId(productId).build());
-//
-//    }
 
-
+    public void cancelOrderEvent(OrderEvent orderEvent) {
+    }
 }

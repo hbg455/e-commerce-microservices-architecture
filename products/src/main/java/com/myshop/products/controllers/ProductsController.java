@@ -4,6 +4,7 @@ import com.myshop.products.dto.DtoCollectionResponse;
 import com.myshop.products.dto.ProductDto;
 import com.myshop.products.services.ProductService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,4 +32,14 @@ public class ProductsController {
         log.info("*** ProductDto, controller; save product *");
         return ResponseEntity.ok(this.productService.save(productDto));
     }
+
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDto> findById(
+            @PathVariable("productId")
+            @NotBlank(message = "Input must not be blank!")
+            @Valid final String productId) {
+        log.info("*** ProductDto, resource; fetch product by id *");
+        return ResponseEntity.ok(this.productService.findById(Integer.parseInt(productId)));
+    }
+
 }

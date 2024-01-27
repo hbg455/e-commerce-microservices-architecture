@@ -1,9 +1,16 @@
 package com.myshop.commonDtos.dto;
 
 import lombok.Builder;
+import lombok.Data;
+import lombok.ToString;
+
+import java.io.Serializable;
 
 @Builder
-public class StockRequestDto {
+@ToString
+@Data
+public class StockRequestDto implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private String skuCode;
     private Integer amount;

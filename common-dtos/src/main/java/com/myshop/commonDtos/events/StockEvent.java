@@ -4,12 +4,13 @@ import com.myshop.commonDtos.dto.StockRequestDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 @NoArgsConstructor
 @Data
-public class StockEvent implements Event {
-
+public class StockEvent implements Event , Serializable {
+    private static final long serialVersionUID = 1L;
     private UUID eventId=UUID.randomUUID();
     private Date eventDate=new Date();
     private StockRequestDto stockRequestDto;

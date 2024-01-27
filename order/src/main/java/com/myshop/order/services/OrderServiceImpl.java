@@ -1,21 +1,15 @@
 package com.myshop.order.services;
 
 import com.myshop.commonDtos.dto.OrderRequestDto;
-import com.myshop.commonDtos.events.OrderEvent;
 import com.myshop.commonDtos.events.OrderStatus;
 import com.myshop.order.dto.OrderDto;
 import com.myshop.order.entities.Order;
-import com.myshop.order.entities.OrderLine;
-import com.myshop.order.event.StockEvent;
-import com.myshop.order.exceptions.OrderRepository;
+import com.myshop.order.repositories.OrderRepository;
 import com.myshop.order.helper.OrderMappingHelper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -54,6 +48,7 @@ public class OrderServiceImpl {
 
             log.info(format("sending message to stock-stream Topic::%s",requestDto.toString()));
         }
+        order.setOrderStatus(OrderStatus.ORDER_CREATED);
         orderRepository.save(order);
         return orderDto;
     }
