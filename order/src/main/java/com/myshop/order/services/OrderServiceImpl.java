@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -35,6 +36,9 @@ public class OrderServiceImpl {
         log.info("*** OrderDto, service; save order *");
         Order order = OrderMappingHelper.mapToOrder(orderDto);
         order.setCreatedAt(Instant.now());
+        order.setOrderStatus(OrderStatus.ORDER_CREATED);
+        order.setOrderNumber(UUID.randomUUID());
+        orderRepository.save(order);
         //kafkaTemplate.send("Pstock-check-events"  ,orderDto.getOrderNumber());
         List<OrderRequestDto> orderRequestDtoList = order.getOrderLineItemsList().stream().map
                 (l -> OrderRequestDto.builder()
@@ -44,13 +48,22 @@ public class OrderServiceImpl {
                         .build()).collect(Collectors.toList());
         for ( OrderRequestDto requestDto :orderRequestDtoList) {
 
-            orderStatusPublisher.publishOrderEvent(requestDto, OrderStatus.ORDER_CREATED);
+            orderStatusPublisher.publishOrderEvent( order.getOrderNumber(),requestDto, OrderStatus.ORDER_CREATED);
 
             log.info(format("sending message to stock-stream Topic::%s",requestDto.toString()));
         }
-        order.setOrderStatus(OrderStatus.ORDER_CREATED);
-        orderRepository.save(order);
-        return orderDto;
+
+        return OrderMappingHelper.mapToDto(order);
+    }
+
+
+    public List<OrderDto> findAll() {
+        log.info("*** OrderDto List, service; fetch all orders *");
+        return this.orderRepository.findAll()
+                .stream()
+                .map(OrderMappingHelper::mapToDto)
+                .distinct()
+                .collect(Collectors.toUnmodifiableList());
     }
 
 

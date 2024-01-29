@@ -1,18 +1,19 @@
-package com.myshop.order.event;
+package com.myshop.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@Builder
+import java.util.Collection;
+
 @NoArgsConstructor
 @AllArgsConstructor
-public class StockEvent {
+@Data
+@Builder
+public class DtoCollectionResponse<T> {
 
+    private Collection<T> collection;
 
-    private String skuCode;
-    private Integer quantity;
 
 }

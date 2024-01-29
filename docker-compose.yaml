@@ -29,14 +29,14 @@ services:
       - postgres
     restart: unless-stopped
 
-#  keycloak:
-#    image: quay.io/keycloak/keycloak:latest
-#    environment:
-#      KEYCLOAK_ADMIN : admin
-#      KEYCLOAK_ADMIN_PASSWORD : admin
-#    ports:
-#      - "8080:8080"
-#    command: start-dev
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - spring
+
 
 
 networks:

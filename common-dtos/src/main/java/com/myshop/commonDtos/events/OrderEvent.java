@@ -15,10 +15,12 @@ public class OrderEvent implements Event , Serializable {
     private static final long serialVersionUID = 1L;
     private UUID eventId = UUID.randomUUID();
     private Date eventDate = new Date();
+    private UUID orderNumber;
     private OrderRequestDto orderRequestDto;
     private OrderStatus orderStatus;
 
-    public OrderEvent(OrderRequestDto orderRequestDto, OrderStatus orderStatus) {
+    public OrderEvent(UUID orderNumber ,OrderRequestDto orderRequestDto, OrderStatus orderStatus) {
+        this.orderNumber = orderNumber;
         this.orderRequestDto = orderRequestDto;
         this.orderStatus = orderStatus;
     }

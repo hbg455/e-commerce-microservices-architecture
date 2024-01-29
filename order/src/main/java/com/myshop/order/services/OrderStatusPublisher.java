@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Sinks;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class OrderStatusPublisher {
@@ -15,8 +17,8 @@ public class OrderStatusPublisher {
     private final Sinks.Many<OrderEvent> orderSinks;
 
 
-    public void publishOrderEvent(OrderRequestDto orderRequestDto, OrderStatus orderStatus){
-        OrderEvent orderEvent=new OrderEvent(orderRequestDto,orderStatus);
+    public void publishOrderEvent(UUID id , OrderRequestDto orderRequestDto, OrderStatus orderStatus){
+        OrderEvent orderEvent=new OrderEvent(id ,orderRequestDto,orderStatus);
         orderSinks.tryEmitNext(orderEvent);
     }
 }

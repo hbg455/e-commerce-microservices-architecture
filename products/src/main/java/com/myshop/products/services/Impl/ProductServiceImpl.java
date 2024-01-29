@@ -92,8 +92,8 @@ public class ProductServiceImpl implements ProductService {
                     p.setQuantity(p.getQuantity() - orderRequestDto.getAmount());
                     productRepository.save(p);
                     log.info("*** StockEvent, service; StockEvent ***", p);
-                    return new StockEvent(stockRequestDto, StockAvailabilityStatus.AVAILABLE);
-                }).orElse(new StockEvent(stockRequestDto, StockAvailabilityStatus.OUT_OF_STOCK));
+                    return new StockEvent(orderEvent.getOrderNumber() ,stockRequestDto, StockAvailabilityStatus.AVAILABLE);
+                }).orElse(new StockEvent(orderEvent.getOrderNumber(),stockRequestDto, StockAvailabilityStatus.OUT_OF_STOCK));
 
 
     }

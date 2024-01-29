@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "t_Order")
@@ -18,17 +19,24 @@ public class Order extends AbstractMappedEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id", unique = true, nullable = false, updatable = false)
+    @SequenceGenerator(
+            name =  "order_id_sequence",
+            sequenceName = "order_id_sequence"
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "order_id_sequence"
+    )
     private Integer orderId;
 
-    @Column(name = "order_number")
-    private String orderNumber;
+    @Column(name = "order_number" , columnDefinition = "uuid")
+    private UUID orderNumber;
 
     @Column(name = "order_status")
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private List<OrderLine> orderLineItemsList;
 }

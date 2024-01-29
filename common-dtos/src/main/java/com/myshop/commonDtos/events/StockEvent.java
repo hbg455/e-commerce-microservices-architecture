@@ -13,10 +13,12 @@ public class StockEvent implements Event , Serializable {
     private static final long serialVersionUID = 1L;
     private UUID eventId=UUID.randomUUID();
     private Date eventDate=new Date();
+    private UUID orderNumber;
     private StockRequestDto stockRequestDto;
     private StockAvailabilityStatus stockavailabilityStatus;
 
-    public StockEvent(StockRequestDto stockRequestDto, StockAvailabilityStatus stockavailabilityStatus) {
+    public StockEvent(UUID orderNumber ,StockRequestDto stockRequestDto, StockAvailabilityStatus stockavailabilityStatus) {
+        this.orderNumber = orderNumber;
         this.stockRequestDto = stockRequestDto;
         this.stockavailabilityStatus = stockavailabilityStatus;
     }

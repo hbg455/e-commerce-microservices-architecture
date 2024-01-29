@@ -17,8 +17,8 @@ public interface OrderMappingHelper {
                 .collect(Collectors.toList());
 
         return Order.builder()
-                .orderId(orderDto.getOrderId())
-                .orderNumber(orderDto.getOrderNumber())
+//                .orderId(orderDto.getOrderId())
+//                .orderNumber(orderDto.getOrderNumber())
                 .orderLineItemsList( orderLines)
                 .build();
     }
@@ -38,8 +38,9 @@ public interface OrderMappingHelper {
                 .collect(Collectors.toList());
 
         return OrderDto.builder()
-                .orderId(order.getOrderId())
+               // .orderId(order.getOrderId())
                 .orderNumber(order.getOrderNumber())
+                .orderStatus(order.getOrderStatus())
                 .orderLineItemsList(orderLineDTOs)
                 .build();
     }

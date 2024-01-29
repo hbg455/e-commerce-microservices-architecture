@@ -4,14 +4,16 @@ spring:
   application:
     name: products
   cloud:
+    function:
+      definition: stockProcessor
     stream:
-      function:
-        definition: stockProcessor
       bindings:
         stockProcessor-out-0:
           destination: stock-event
+          group: stock-group
         stockProcessor-in-0:
           destination: order-event
+          group: order-group
 
   datasource:
       password: password
@@ -25,6 +27,9 @@ spring:
           dialect: org.hibernate.dialect.PostgreSQLDialect
           format_sql: true
       show-sql: true
+  zipkin:
+    base-url: http://localhost:9411
+
 
 eureka:
   client:
