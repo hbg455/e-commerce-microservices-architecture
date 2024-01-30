@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto findById(Integer productId) {
         log.info("*** ProductDto, service; fetch product by id *");
-        return this.productRepository.findBySkuCode("fedi")
+        return this.productRepository.findById(productId)
                 .map(ProductMappingHelper::map)
                 .orElseThrow(() -> new RuntimeException(String.format("Product with id: %d not found", productId)));
     }
@@ -62,17 +62,26 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto update(ProductDto productDto) {
-        return null;
+        log.info("*** ProductDto, service; update product *");
+        return ProductMappingHelper
+                .map(this.productRepository
+                .save(ProductMappingHelper.map(productDto)));
     }
 
     @Override
     public ProductDto update(Integer productId, ProductDto productDto) {
-        return null;
+        log.info("*** ProductDto, service; update product with productId *");
+        return ProductMappingHelper
+                .map(this.productRepository
+                .save(ProductMappingHelper
+                        .map(this.findById(productId))));
     }
 
     @Override
     public void deleteById(Integer productId) {
-
+        log.info("*** Void, service; delete product by id *");
+        this.productRepository.delete(ProductMappingHelper
+                .map(this.findById(productId)));
     }
 
 

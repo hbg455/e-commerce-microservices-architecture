@@ -38,8 +38,36 @@ public class ProductsController {
             @PathVariable("productId")
             @NotBlank(message = "Input must not be blank!")
             @Valid final String productId) {
-        log.info("*** ProductDto, resource; fetch product by id *");
+        log.info("*** ProductDto, controller; fetch product by id *");
         return ResponseEntity.ok(this.productService.findById(Integer.parseInt(productId)));
+    }
+
+    @PutMapping
+    public ResponseEntity<ProductDto> update(
+            @RequestBody
+            @NotNull(message = "Input must not be NULL!")
+            @Valid final ProductDto productDto) {
+        log.info("*** ProductDto, controller; update product *");
+        return ResponseEntity.ok(this.productService.update(productDto));
+    }
+
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDto> update(
+            @PathVariable("productId")
+            @NotBlank(message = "Input must not be blank!")
+            @Valid final String productId,
+            @RequestBody
+            @NotNull(message = "Input must not be NULL!")
+            @Valid final ProductDto productDto) {
+        log.info("*** ProductDto, controller; update product with productId *");
+        return ResponseEntity.ok(this.productService.update(Integer.parseInt(productId), productDto));
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Boolean> deleteById(@PathVariable("productId") final String productId) {
+        log.info("*** Boolean, resource; delete product by id *");
+        this.productService.deleteById(Integer.parseInt(productId));
+        return ResponseEntity.ok(true);
     }
 
 }
