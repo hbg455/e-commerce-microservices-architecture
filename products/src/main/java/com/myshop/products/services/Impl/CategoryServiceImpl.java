@@ -4,6 +4,7 @@ import com.myshop.products.dto.CategoryDto;
 import com.myshop.products.entities.Category;
 import com.myshop.products.exception.Wrapper.CategoryNotFoundException;
 import com.myshop.products.helper.CategoryMappingHelper;
+import com.myshop.products.helper.ProductMappingHelper;
 import com.myshop.products.repositories.CategoryRepository;
 import com.myshop.products.services.CategoryService;
 import jakarta.transaction.Transactional;
@@ -45,8 +46,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto save(CategoryDto categoryDto) {
         log.info("*** CategoryDto, service; save category *");
-
-
         Category category = CategoryMappingHelper.map(categoryDto);
         category.setCreatedAt(Instant.now());
         return CategoryMappingHelper.map(this.categoryRepository
@@ -55,16 +54,28 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto update(CategoryDto categoryDto) {
-        return null;
+        log.info("*** CategoryDto, service; update Category *");
+        return CategoryMappingHelper
+                .map(this.categoryRepository
+                        .save(CategoryMappingHelper
+                                .map(categoryDto)));
     }
 
     @Override
     public CategoryDto update(Integer categoryId, CategoryDto categoryDto) {
-        return null;
+        log.info("*** CategoryDto, service; update Category with productId *");
+        return CategoryMappingHelper
+                .map(this.categoryRepository
+                        .save(CategoryMappingHelper
+                                .map(this.findById(categoryId))));
     }
 
     @Override
     public void deleteById(Integer categoryId) {
+
+        log.info("*** Void, service; delete Category by id *");
+        this.categoryRepository.delete(CategoryMappingHelper
+                .map(this.findById(categoryId)));
 
     }
 }
