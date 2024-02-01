@@ -16,34 +16,34 @@ public class UsersApplication {
         SpringApplication.run(UsersApplication.class , args);
     }
 
-    @Bean
-    public CommandLineRunner commandLineRunner(
-            IUserServiceImpl service
-    ) {
-        return args -> {
-            var admin = UserDto.builder()
-                    .username("Admin")
-                    .firstname("Admin")
-                    .lastname("Admin")
-                    .email("admin@mail.com")
-                    .password("password")
-                    .role(ADMIN)
-                    .build();
-
-            service.addUser(admin);
-            System.out.println(admin);
-
-            var manager = UserDto.builder()
-                    .username("manager")
-                    .firstname("manager")
-                    .lastname("manager")
-                    .email("manager@mail.com")
-                    .password("password")
-                    .role(MANAGER)
-                    .build();
-            service.addUser(manager);
-            System.out.println(manager);
-        };
-}
+//    @Bean
+//    public CommandLineRunner commandLineRunner(
+//            IUserServiceImpl service
+//    ) {
+//        return args -> {
+//            var admin = UserDto.builder()
+//                    .username("Admin")
+//                    .firstname("Admin")
+//                    .lastname("Admin")
+//                    .email("admin@mail.com")
+//                    .password("password")
+//                    .role(ADMIN)
+//                    .build();
+//
+//            service.addUser(admin);
+//            System.out.println(admin);
+//
+//            var manager = UserDto.builder()
+//                    .username("manager")
+//                    .firstname("manager")
+//                    .lastname("manager")
+//                    .email("manager@mail.com")
+//                    .password("password")
+//                    .role(MANAGER)
+//                    .build();
+//            service.addUser(manager);
+//            System.out.println(manager);
+//        };
+//}
 }
 

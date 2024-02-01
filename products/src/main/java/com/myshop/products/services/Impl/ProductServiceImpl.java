@@ -7,6 +7,7 @@ import com.myshop.commonDtos.events.StockAvailabilityStatus;
 import com.myshop.commonDtos.events.StockEvent;
 import com.myshop.products.dto.ProductDto;
 import com.myshop.products.entities.Product;
+import com.myshop.products.exception.Wrapper.ProductNotFoundException;
 import com.myshop.products.helper.ProductMappingHelper;
 import com.myshop.products.repositories.ProductRepository;
 import com.myshop.products.services.ProductService;
@@ -48,7 +49,7 @@ public class ProductServiceImpl implements ProductService {
         log.info("*** ProductDto, service; fetch product by id *");
         return this.productRepository.findById(productId)
                 .map(ProductMappingHelper::map)
-                .orElseThrow(() -> new RuntimeException(String.format("Product with id: %d not found", productId)));
+                .orElseThrow(() -> new ProductNotFoundException(String.format("Product with id: %d not found", productId)));
     }
 
     @Override

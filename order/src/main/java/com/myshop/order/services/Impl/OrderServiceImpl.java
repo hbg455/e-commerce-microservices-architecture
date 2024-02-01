@@ -12,6 +12,7 @@ import com.myshop.order.services.OrderStatusPublisher;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -41,12 +42,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.ORDER_CREATED);
         order.setOrderNumber(UUID.randomUUID());
         orderRepository.save(order);
-        List<OrderRequestDto> orderRequestDtoList = order.getOrderLineItemsList().stream().map
-                (l -> OrderRequestDto.builder()
-                        .orderId(l.getOrderLineId())
-                        .skuCode(l.getSkuCode())
-                        .amount(l.getQuantity())
-                        .build()).collect(Collectors.toList());
+        List<OrderRequestDto> orderRequestDtoList = getOrderRequestDtos(order);
         for (OrderRequestDto requestDto : orderRequestDtoList) {
             orderStatusPublisher.publishOrderEvent(order.getOrderNumber(), requestDto, OrderStatus.ORDER_CREATED);
             log.info(format("sending message to stock-stream Topic::%s", requestDto.toString()));
@@ -57,11 +53,30 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto update(OrderDto orderDto) {
         log.info("*** CategoryDto, service; update Category *");
-        return OrderMappingHelper
-                .mapToDto(
-                        this.orderRepository
-                        .save(OrderMappingHelper
-                                .mapToOrder(orderDto)));    }
+        Order order = OrderMappingHelper.mapToOrder(orderDto);
+        order.setCreatedAt(Instant.now());
+        order.setOrderStatus(OrderStatus.ORDER_CREATED);
+        this.orderRepository.save(order);
+        List<OrderRequestDto> orderRequestDtoList = getOrderRequestDtos(order);
+        for (OrderRequestDto requestDto : orderRequestDtoList) {
+            orderStatusPublisher.publishOrderEvent(order.getOrderNumber(), requestDto, OrderStatus.ORDER_CREATED);
+            log.info(format("sending message to stock-stream Topic::%s", requestDto.toString()));
+        }
+
+        return OrderMappingHelper.mapToDto(order);
+
+    }
+
+    @NotNull
+    private static List<OrderRequestDto> getOrderRequestDtos(Order order) {
+        List<OrderRequestDto> orderRequestDtoList = order.getOrderLineItemsList().stream().map
+                (l -> OrderRequestDto.builder()
+                        .orderId(l.getOrderLineId())
+                        .skuCode(l.getSkuCode())
+                        .amount(l.getQuantity())
+                        .build()).collect(Collectors.toList());
+        return orderRequestDtoList;
+    }
 
     @Override
     public OrderDto update(Integer orderId, OrderDto orderDto) {
@@ -90,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("*** OrderDto, service; fetch order by id *");
         return this.orderRepository.findById(orderId)
                 .map(OrderMappingHelper::mapToDto)
-                .orElseThrow(() -> new OrderNotFoundException(String.format("Category with id: %d not found", orderId)));
+                .orElseThrow(() -> new OrderNotFoundException(String.format("Order with id: %d not found", orderId)));
 
     }
 
