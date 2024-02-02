@@ -16,7 +16,8 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true, exclude = {"category"})
 @Data
 @Builder
-public class Product extends AbstractMappedEntity implements Serializable {
+public class
+Product extends AbstractMappedEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

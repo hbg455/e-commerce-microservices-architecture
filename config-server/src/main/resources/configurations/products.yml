@@ -14,7 +14,6 @@ spring:
         stockProcessor-in-0:
           destination: order-event
           group: order-group
-
   datasource:
     password: password
     url: jdbc:postgresql://localhost:5432/users

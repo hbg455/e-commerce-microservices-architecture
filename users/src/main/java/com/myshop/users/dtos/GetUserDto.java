@@ -5,13 +5,15 @@ import lombok.Builder;
 
 @Builder
 public record GetUserDto(
-                          String username,
 
-                          String firstname,
+        Integer UserId,
+        String username,
 
-                          String lastname,
+        String firstname,
 
-                          String email,
+        String lastname,
 
-                          Role role){
+        String email,
+
+        Role role) {
 }

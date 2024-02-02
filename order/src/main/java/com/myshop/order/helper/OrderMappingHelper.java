@@ -19,6 +19,7 @@ public interface OrderMappingHelper {
         return Order.builder()
                 .orderId(orderDto.getOrderId())
                 .orderNumber(orderDto.getOrderNumber())
+                .orderStatus(orderDto.getOrderStatus())
                 .orderLineItemsList( orderLines)
                 .build();
     }

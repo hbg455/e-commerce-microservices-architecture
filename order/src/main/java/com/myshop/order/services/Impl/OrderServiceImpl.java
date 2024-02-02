@@ -52,14 +52,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto update(OrderDto orderDto) {
-        log.info("*** CategoryDto, service; update Category *");
+        log.info("*** OrderDto, service; update Order *");
         Order order = OrderMappingHelper.mapToOrder(orderDto);
         order.setCreatedAt(Instant.now());
-        order.setOrderStatus(OrderStatus.ORDER_CREATED);
+        if (!order.getOrderStatus().equals(OrderStatus.ORDER_CANCELLED)) {
+            order.setOrderStatus(OrderStatus.ORDER_CREATED);
+        }
         this.orderRepository.save(order);
         List<OrderRequestDto> orderRequestDtoList = getOrderRequestDtos(order);
         for (OrderRequestDto requestDto : orderRequestDtoList) {
-            orderStatusPublisher.publishOrderEvent(order.getOrderNumber(), requestDto, OrderStatus.ORDER_CREATED);
+            orderStatusPublisher.publishOrderEvent(order.getOrderNumber(), requestDto, order.getOrderStatus());
             log.info(format("sending message to stock-stream Topic::%s", requestDto.toString()));
         }
 

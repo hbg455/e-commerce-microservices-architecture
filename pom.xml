@@ -23,6 +23,7 @@
         <module>order</module>
 		<module>order</module>
         <module>common-dtos</module>
+        <module>payment</module>
     </modules>
 	<properties>
 		<java.version>17</java.version>

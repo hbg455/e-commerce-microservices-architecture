@@ -6,6 +6,8 @@ import com.myshop.users.dtos.AuthenticationResponse;
 import com.myshop.users.dtos.UserDto;
 import com.myshop.users.dtos.GetUserDto;
 import com.myshop.users.entities.User;
+import com.myshop.users.exceptions.wrapper.UserNotFoundException;
+import com.myshop.users.helper.UserMappingHelper;
 import com.myshop.users.repositories.UserRepository;
 import com.myshop.users.security.JwtService;
 import com.myshop.users.services.IUsersService;
@@ -15,9 +17,11 @@ import com.myshop.users.token.TokenType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +34,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class IUserServiceImpl implements IUsersService {
 
     private final UserRepository userRepository ;
@@ -56,14 +61,7 @@ public class IUserServiceImpl implements IUsersService {
                 .role(userDto.role())
                 .build();
          userRepository.save(user);
-        var GetuserDto = GetUserDto.builder()
-                .username(user.getUsername())
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
-                .email(user.getEmail())
-                .role(user.getRole())
-                .build();
-            return GetuserDto;
+    return UserMappingHelper.mapToDto(user);
     }
 
     @Override
@@ -74,17 +72,37 @@ public class IUserServiceImpl implements IUsersService {
     @Override
     public List<GetUserDto> listUsers() {
 
-        var users = userRepository.findAll();
-        List<GetUserDto> userDtos = users.stream()
-                .map(user -> new GetUserDto(
-                        user.getUsername(),
-                        user.getFirstname(),
-                        user.getLastname(),
-                        user.getEmail(),
-                        user.getRole()
-                )).collect(Collectors.toList());
+        return this.userRepository.findAll()
+                .stream().map(UserMappingHelper::mapToDto)
+                .collect(Collectors.toList());
 
-        return userDtos ;
+    }
+
+    @Override
+    public GetUserDto findUserById(Integer id) {
+         return this.userRepository.findById(id)
+                 .map(UserMappingHelper::mapToDto)
+                 .orElseThrow(()->new UserNotFoundException(String.format("User with id: %d not found", id)));
+    }
+
+    @Override
+    public GetUserDto update(UserDto userDto) {
+        log.info("*** UserDto, service; update user *");
+        return UserMappingHelper.mapToDto(
+                this.userRepository.save(UserMappingHelper.mapToUser(userDto)));
+
+    }
+
+    @Override
+    public GetUserDto update(Integer userID, UserDto userDto) {
+        return null;
+    }
+
+    @Override
+    public void deleteById(Integer userId) {
+        log.info("*** Void, service; delete User by id *");
+        this.userRepository.delete(userRepository.findById(userId)
+                .orElseThrow(()->new UserNotFoundException(String.format("User with id: %d not found", userId))));
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request)  {
@@ -108,7 +126,7 @@ public class IUserServiceImpl implements IUsersService {
 
     }
     private void revokeAllUserTokens(User user){
-        var validUserToken = tokenRepository.findAllValidTokenByUser(user.getId());
+        var validUserToken = tokenRepository.findAllValidTokenByUser(user.getUserId());
         if (validUserToken.isEmpty()) return;
         validUserToken.forEach(t ->{
             t.setExpired(true);

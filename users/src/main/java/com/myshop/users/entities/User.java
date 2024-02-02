@@ -23,14 +23,14 @@ public class User implements UserDetails {
 
     @Id
     @SequenceGenerator(
-            name =  "customer_id_sequence",
-            sequenceName = "customer_id_sequence"
+            name =  "user_id_sequence",
+            sequenceName = "user_id_sequence"
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "customer_id_sequence"
+            generator = "user_id_sequence"
     )
-    private Integer id;
+    private Integer UserId;
     private String username;
     private String firstname;
     private String lastname;

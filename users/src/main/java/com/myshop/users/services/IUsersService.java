@@ -15,15 +15,23 @@ import java.util.Optional;
 public interface IUsersService {
 
     GetUserDto addUser(UserDto userDto);
+
     Optional<User> loadUserByUsername(String username);
 
     List<GetUserDto> listUsers();
 
-     AuthenticationResponse authenticate(AuthenticationRequest request);
+    GetUserDto findUserById(Integer id);
 
-     void refreshToken(HttpServletRequest request,
-                       HttpServletResponse response) throws IOException ;
+    GetUserDto update(final UserDto userDto);
 
+    GetUserDto update(final Integer userID, final UserDto userDto);
+
+    void deleteById(final Integer productId);
+
+    AuthenticationResponse authenticate(AuthenticationRequest request);
+
+    void refreshToken(HttpServletRequest request,
+                      HttpServletResponse response) throws IOException;
 
 
 }

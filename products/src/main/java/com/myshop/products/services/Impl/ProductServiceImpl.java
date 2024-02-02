@@ -110,5 +110,10 @@ public class ProductServiceImpl implements ProductService {
 
 
     public void cancelOrderEvent(OrderEvent orderEvent) {
+        productRepository.findBySkuCode(orderEvent.getOrderRequestDto().getSkuCode())
+                .ifPresent(p->{
+                    p.setQuantity(p.getQuantity() + orderEvent.getOrderRequestDto().getAmount());
+                    productRepository.save(p);
+                });
     }
 }
