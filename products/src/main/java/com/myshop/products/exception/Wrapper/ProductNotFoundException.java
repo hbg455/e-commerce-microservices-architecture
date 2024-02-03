@@ -1,6 +1,5 @@
 package com.myshop.products.exception.Wrapper;
 
-import com.myshop.order.exceptions.payload.ExceptionMessage;
 
 public class ProductNotFoundException    extends RuntimeException {
 

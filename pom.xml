@@ -17,12 +17,11 @@
 	<modules>
 		<module>config-server</module>
 		<module>eureka-server</module>
+		<module>common-dtos</module>
 		<module>users</module>
         <module>api-gateway</module>
         <module>products</module>
         <module>order</module>
-		<module>order</module>
-        <module>common-dtos</module>
         <module>payment</module>
     </modules>
 	<properties>

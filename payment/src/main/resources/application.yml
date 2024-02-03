@@ -1,5 +1,28 @@
+server:
+  port: 8098
+  servlet:
+    context-path: /api/integration
 spring:
-  config:
-    import: optional:configserver:http://localhost:8888
   application:
     name: payments
+  datasource:
+    password: password
+    url: jdbc:postgresql://localhost:5432/users
+    username: shopify
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  zipkin:
+    base-url: http://localhost:9411
+
+
+
+
+api:
+  stripe:
+    key: sk_test_51Ofk94DjFawQhX49CetdcYv9d4IHQ0jis2FPHVsm9PV4Ja20NKLDUcgo2QfareO2QJO0Y8at1yUvO3BOdUhGALPY00fiGmHLj6
