@@ -4,7 +4,7 @@ import com.myshop.users.entities.Role;
 import lombok.Builder;
 
 @Builder
-public record GetUserDto(
+public record ResUserDto(
 
         Integer UserId,
         String username,

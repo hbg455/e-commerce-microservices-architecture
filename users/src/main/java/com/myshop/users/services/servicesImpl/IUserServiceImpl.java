@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myshop.users.dtos.AuthenticationRequest;
 import com.myshop.users.dtos.AuthenticationResponse;
 import com.myshop.users.dtos.UserDto;
-import com.myshop.users.dtos.GetUserDto;
+import com.myshop.users.dtos.ResUserDto;
 import com.myshop.users.entities.User;
 import com.myshop.users.exceptions.wrapper.UserNotFoundException;
 import com.myshop.users.helper.UserMappingHelper;
@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +49,7 @@ public class IUserServiceImpl implements IUsersService {
 
 
     @Override
-    public GetUserDto addUser(UserDto userDto) {
+    public ResUserDto addUser(UserDto userDto) {
 
         var user = User.builder()
                 .firstname(userDto.firstname())
@@ -70,7 +69,7 @@ public class IUserServiceImpl implements IUsersService {
     }
 
     @Override
-    public List<GetUserDto> listUsers() {
+    public List<ResUserDto> listUsers() {
 
         return this.userRepository.findAll()
                 .stream().map(UserMappingHelper::mapToDto)
@@ -79,14 +78,14 @@ public class IUserServiceImpl implements IUsersService {
     }
 
     @Override
-    public GetUserDto findUserById(Integer id) {
+    public ResUserDto findUserById(Integer id) {
          return this.userRepository.findById(id)
                  .map(UserMappingHelper::mapToDto)
                  .orElseThrow(()->new UserNotFoundException(String.format("User with id: %d not found", id)));
     }
 
     @Override
-    public GetUserDto update(UserDto userDto) {
+    public ResUserDto update(UserDto userDto) {
         log.info("*** UserDto, service; update user *");
         return UserMappingHelper.mapToDto(
                 this.userRepository.save(UserMappingHelper.mapToUser(userDto)));
@@ -94,7 +93,7 @@ public class IUserServiceImpl implements IUsersService {
     }
 
     @Override
-    public GetUserDto update(Integer userID, UserDto userDto) {
+    public ResUserDto update(Integer userID, UserDto userDto) {
         return null;
     }
 
@@ -113,7 +112,7 @@ public class IUserServiceImpl implements IUsersService {
                 )
         );
 
-        var user = userRepository.findByUsername(request.username()).orElseThrow();
+        var user = userRepository.findByUsername(request.username()).orElseThrow(()->new UserNotFoundException(String.format("User  not found")));
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);

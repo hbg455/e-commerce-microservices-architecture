@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class StripeApi {
 
-    private final StripeService stripeService;
 
 
     @PostMapping("/create-payment-intent" )
@@ -23,8 +22,9 @@ public class StripeApi {
 
         PaymentIntentCreateParams params =
                 PaymentIntentCreateParams.builder()
-                        .setAmount(15 * 100L) //TODO: get this from createPayment :  the order amount
-                        .setCurrency("gbp")
+                        .setAmount(49 * 100L) //TODO: get this from createPayment :  the order amount
+                        .setCurrency("usd")
+                        .setDescription("creatine monohydrate")
                         // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
                         .setAutomaticPaymentMethods(
                                 PaymentIntentCreateParams.AutomaticPaymentMethods

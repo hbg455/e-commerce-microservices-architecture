@@ -2,7 +2,7 @@ package com.myshop.users.controllers;
 
 import com.myshop.users.dtos.AuthenticationRequest;
 import com.myshop.users.dtos.AuthenticationResponse;
-import com.myshop.users.dtos.GetUserDto;
+import com.myshop.users.dtos.ResUserDto;
 import com.myshop.users.dtos.UserDto;
 import com.myshop.users.services.IUsersService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +28,7 @@ public class UserController {
 
 
     @PostMapping("/register")
-    public GetUserDto addUser(
+    public ResUserDto addUser(
             @RequestBody UserDto request ) {
         return service.addUser(request);
     }
@@ -41,7 +41,7 @@ public class UserController {
     }
 
     @GetMapping("user/{userId}")
-    public ResponseEntity<GetUserDto> findById(
+    public ResponseEntity<ResUserDto> findById(
             @PathVariable("userId")
             @NotBlank(message = "Input must not be blank!")
             @Valid final String userId) {
@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<GetUserDto> update(
+    public ResponseEntity<ResUserDto> update(
             @RequestBody
             @NotNull(message = "Input must not be NULL!")
             @Valid final UserDto userDto) {
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<GetUserDto> getUsers( ) {
+    public List<ResUserDto> getUsers( ) {
         log.info("*** UserDto, controller; fetch all users");
         return service.listUsers();
     }
