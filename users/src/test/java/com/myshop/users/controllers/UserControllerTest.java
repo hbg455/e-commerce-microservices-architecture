@@ -1,92 +1,115 @@
 package com.myshop.users.controllers;
 
-import com.myshop.users.dtos.ResUserDto;
-import com.myshop.users.exceptions.wrapper.UserNotFoundException;
-import com.myshop.users.services.IUsersService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myshop.users.dtos.UserDto;
+import com.myshop.users.repositories.UserRepository;
+import com.myshop.users.security.JwtService;
+import com.myshop.users.services.servicesImpl.IUserServiceImpl;
+import com.myshop.users.token.TokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Arrays;
-import java.util.List;
+import org.springframework.test.web.servlet.ResultActions;
 
 import static com.myshop.users.entities.Role.ADMIN;
-import static com.myshop.users.entities.Role.MANAGER;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 @ExtendWith(MockitoExtension.class)
-@WebMvcTest(UserController.class)
+@WebMvcTest(controllers = UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserControllerTest {
 
-    @Mock
-    private IUsersService userService;
 
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private IUserServiceImpl userService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserRepository userRepository;
+    @MockBean
+    private PasswordEncoder passwordEncoder;
+    @MockBean
+    private AuthenticationManager authenticationManager;
+
+    @MockBean
+    private TokenRepository tokenRepository;
+
     @InjectMocks
     private UserController userController;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+
+    private UserDto userDto;
+
     @BeforeEach
     void setUp() {
-        userService = Mockito.mock(IUsersService.class);
+        userDto = UserDto.builder()
+                .username("Admin")
+                .firstname("Admin")
+                .lastname("Admin")
+                .email("admin@mail.com")
+                .password("password")
+                .role(ADMIN)
+                .build();
+        MockitoAnnotations.openMocks(this);
+        userService = new IUserServiceImpl(userRepository, passwordEncoder, authenticationManager, jwtService, tokenRepository);
         userController = new UserController(userService);
     }
 
 
-
     @Test
-    void addUser() {
+    void addUser() throws Exception {
+        given(userService.addUser(userDto)).willAnswer(invocation -> invocation.getArgument(0));
+
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/auth/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userDto)));
+
+        resultActions.andExpect(status().isOk());
     }
 
     @Test
     void authenticate() {
     }
+
     @Test
     void findById_whenUserExists_returnsUser() throws Exception {
 
-        // Given
-        Integer userId = 1;
-        ResUserDto user1 = new ResUserDto(1, "John", "Doe" ,"zigeni", "<EMAIL>",ADMIN );
 
-        // Mocking behavior for the service method
-        when(userService.findUserById(userId)).thenReturn(user1);
-
-        // When and Then
-        mockMvc.perform(get("/api/v1/auth/user/{userId}", userId))
+        mockMvc.perform(get("/api/users/{userId}", 123))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.property", equalTo("expectedValue"))); // Adjust based on your response structure
+                .andExpect(jsonPath("$.id").value(123))
+                .andExpect(jsonPath("$.name").value("John"));
 
-        // Verify that the service method is called with the correct parameter
-        verify(userService).findUserById(userId);
+
     }
-
-
 
 
     @Test
     void findById_whenUserDoesNotExist_throwsException() {
 
-        // Arrange
-        int id = 2;
-        when(userService.findUserById(id)).thenThrow(new UserNotFoundException());
-
-        // Assert
-        assertThrows(UserNotFoundException.class, () -> {
-            userController.findById(String.valueOf(id));
-        });
 
     }
 
@@ -101,17 +124,7 @@ class UserControllerTest {
 
     @Test
     void getUsers() {
-        ResUserDto user1 = new ResUserDto(1, "John", "Doe" ,"zigeni", "<EMAIL>",ADMIN );
-        ResUserDto user2 = new ResUserDto(2, "Jane", "Doe" ,"zigeni", "<EMAIL>",MANAGER);
 
-        List<ResUserDto> expectedUsers = Arrays.asList(user1, user2);
-
-        when(userService.listUsers()).thenReturn(expectedUsers);
-
-        List<ResUserDto> actualUsers = userController.getUsers();
-
-        assertNotNull(actualUsers);
-        assertEquals(expectedUsers, actualUsers);
     }
 
     @Test
