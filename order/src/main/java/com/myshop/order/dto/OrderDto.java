@@ -2,7 +2,7 @@ package com.myshop.order.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.myshop.commonDtos.events.OrderStatus;
+import com.myshop.commonDtos.events.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

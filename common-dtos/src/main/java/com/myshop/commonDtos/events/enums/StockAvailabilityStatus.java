@@ -1,4 +1,4 @@
-package com.myshop.commonDtos.events;
+package com.myshop.commonDtos.events.enums;
 
 public enum StockAvailabilityStatus {
 

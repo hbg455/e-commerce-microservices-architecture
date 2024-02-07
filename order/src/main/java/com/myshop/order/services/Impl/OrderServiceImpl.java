@@ -1,7 +1,7 @@
 package com.myshop.order.services.Impl;
 
 import com.myshop.commonDtos.dto.OrderRequestDto;
-import com.myshop.commonDtos.events.OrderStatus;
+import com.myshop.commonDtos.events.enums.OrderStatus;
 import com.myshop.order.dto.OrderDto;
 import com.myshop.order.entities.Order;
 import com.myshop.order.exceptions.wrapper.OrderNotFoundException;
@@ -13,7 +13,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

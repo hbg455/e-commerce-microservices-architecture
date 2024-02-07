@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    function:
+      definition: orderEventConsumer
+    stream:
+      bindings:
+        orderEventConsumer-in-0:
+          destination: order-payment-event
+          group: order-payment-group

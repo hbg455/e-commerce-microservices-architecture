@@ -1,7 +1,10 @@
 package com.myshop.users.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myshop.users.dtos.ResUserDto;
 import com.myshop.users.dtos.UserDto;
+import com.myshop.users.entities.User;
+import com.myshop.users.helper.UserMappingHelper;
 import com.myshop.users.repositories.UserRepository;
 import com.myshop.users.security.JwtService;
 import com.myshop.users.services.servicesImpl.IUserServiceImpl;
@@ -9,6 +12,7 @@ import com.myshop.users.token.TokenRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,13 +25,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+
+import java.util.Optional;
 
 import static com.myshop.users.entities.Role.ADMIN;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 @WebMvcTest(controllers = UserController.class)
@@ -62,6 +71,9 @@ class UserControllerTest {
 
 
     private UserDto userDto;
+    private ResUserDto resUserDto;
+
+
 
     @BeforeEach
     void setUp() {
@@ -73,6 +85,14 @@ class UserControllerTest {
                 .password("password")
                 .role(ADMIN)
                 .build();
+
+        resUserDto = ResUserDto.builder()
+                .username("Admin")
+                .firstname("Admin")
+                .lastname("Admin")
+                .email("admin@mail.com")
+                .role(ADMIN)
+                .build();
         MockitoAnnotations.openMocks(this);
         userService = new IUserServiceImpl(userRepository, passwordEncoder, authenticationManager, jwtService, tokenRepository);
         userController = new UserController(userService);
@@ -81,13 +101,13 @@ class UserControllerTest {
 
     @Test
     void addUser() throws Exception {
-        given(userService.addUser(userDto)).willAnswer(invocation -> invocation.getArgument(0));
+        given(userService.addUser(userDto)).willReturn(resUserDto); // Stubbing userService behavior
 
         ResultActions resultActions = mockMvc.perform(post("/api/v1/auth/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userDto)));
 
-        resultActions.andExpect(status().isOk());
+        resultActions.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
     }
 
     @Test
@@ -98,10 +118,23 @@ class UserControllerTest {
     void findById_whenUserExists_returnsUser() throws Exception {
 
 
-        mockMvc.perform(get("/api/users/{userId}", 123))
+        // Arrange
+        int userId = 1;
+
+        User existingUser = UserMappingHelper.mapToUser(userDto);
+
+        //when(userService.findUserById(userId)).thenReturn(resUserDto);
+        when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
+        // Act
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/auth/user/{userId}", userId));
+
+        // Assert
+        resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(123))
-                .andExpect(jsonPath("$.name").value("John"));
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$.username").value(resUserDto.username())) // Adjust the JSON path based on your response structure
+                // Add more assertions as needed
+                .andReturn();
 
 
     }

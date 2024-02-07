@@ -1,8 +1,9 @@
-package com.myshop.order.config;
+package com.myshop.payment.config;
 
+import com.myshop.commonDtos.events.StockEvent;
+import com.myshop.commonDtos.events.ValidatedOrder;
 import com.myshop.commonDtos.events.enums.OrderStatus;
 import com.myshop.commonDtos.events.enums.StockAvailabilityStatus;
-import com.myshop.commonDtos.events.StockEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -16,20 +17,18 @@ import java.util.function.Consumer;
 @Slf4j
 public class EventConsumerConfig {
 
-    private final OrderStatusUpdateHandler handler;
+    //private final OrderStatusUpdateHandler handler;
 
     @Bean
-    public Consumer<StockEvent> stockEventConsumer(){
+    public Consumer<ValidatedOrder> orderEventConsumer(){
         //listen payment-event-topic
         //will check payment status
         //if payment status completed -> complete the order
         //if payment status failed -> cancel the order
-        return (stock)-> handler.updateOrder(stock.getOrderNumber(),
-                po->{ po.setOrderStatus(
-                        stock.getStockavailabilityStatus().equals(StockAvailabilityStatus.AVAILABLE) ? OrderStatus.PENDING_PAYMENT : OrderStatus.ORDER_CANCELLED);
-                        po.setUpdatedAt(Instant.now());
-                log.info("Order status updated to {}",stock.getEventId());
+        return (validatedOrder)->
 
-        });
+                    log.info("Order status updated to {}",validatedOrder.getEventId());
+
+
     }
 }

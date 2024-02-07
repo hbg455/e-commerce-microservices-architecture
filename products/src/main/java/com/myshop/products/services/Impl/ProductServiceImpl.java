@@ -3,7 +3,7 @@ package com.myshop.products.services.Impl;
 import com.myshop.commonDtos.dto.OrderRequestDto;
 import com.myshop.commonDtos.dto.StockRequestDto;
 import com.myshop.commonDtos.events.OrderEvent;
-import com.myshop.commonDtos.events.StockAvailabilityStatus;
+import com.myshop.commonDtos.events.enums.StockAvailabilityStatus;
 import com.myshop.commonDtos.events.StockEvent;
 import com.myshop.products.dto.ProductDto;
 import com.myshop.products.entities.Product;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;

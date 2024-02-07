@@ -1,9 +1,8 @@
 package com.myshop.order.config;
 
 import com.myshop.commonDtos.dto.OrderRequestDto;
-import com.myshop.commonDtos.events.OrderEvent;
-import com.myshop.commonDtos.events.OrderStatus;
-import com.myshop.commonDtos.events.StockAvailabilityStatus;
+import com.myshop.commonDtos.dto.ValidatedOrderDto;
+import com.myshop.commonDtos.events.enums.OrderStatus;
 import com.myshop.order.entities.Order;
 import com.myshop.order.repositories.OrderRepository;
 import com.myshop.order.services.OrderStatusPublisher;
@@ -11,8 +10,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
@@ -28,10 +29,22 @@ public class OrderStatusUpdateHandler {
     }
 
     private void updateOrder(Order order) {
-//        System.out.println("Order status updated to " + order.getOrderStatus());
-//        OrderRequestDto orderRequestDto = null;
-//        publisher.publishOrderEvent(orderRequestDto.orderRequestDto , order.getOrderStatus());
+        System.out.println("Order status updated to " + order.getOrderStatus());
+
+        if (order.getOrderStatus().equals(OrderStatus.PENDING_PAYMENT)) {
+
+            ValidatedOrderDto validatedOrderDto = ValidatedOrderDto.builder()
+                    .orderId(order.getOrderId())
+                    .userId(78963214)
+                    .totalAmount(49)
+                    .build();
 
 
+
+            publisher.publishPaymentEvent(order.getOrderNumber(), validatedOrderDto, order.getOrderStatus());
+
+
+        }
     }
 }
+

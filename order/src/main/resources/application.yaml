@@ -1,7 +1,7 @@
 spring:
   cloud:
     function:
-      definition: orderSupplier;stockEventConsumer
+      definition: orderSupplier;stockEventConsumer;orderSupplierToPayment
     stream:
       bindings:
         orderSupplier-out-0:
@@ -10,3 +10,6 @@ spring:
         stockEventConsumer-in-0:
           destination: stock-event
           group: stock-group
+        orderSupplierToPayment-out-0:
+          destination: order-payment-event
+          group: order-payment-group

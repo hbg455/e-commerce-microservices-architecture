@@ -1,6 +1,6 @@
 package com.myshop.order.entities;
 
-import com.myshop.commonDtos.events.OrderStatus;
+import com.myshop.commonDtos.events.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

@@ -1,7 +1,7 @@
 package com.myshop.products.config;
 
 import com.myshop.commonDtos.events.OrderEvent;
-import com.myshop.commonDtos.events.OrderStatus;
+import com.myshop.commonDtos.events.enums.OrderStatus;
 import com.myshop.commonDtos.events.StockEvent;
 import com.myshop.products.services.Impl.ProductServiceImpl;
 import lombok.extern.slf4j.Slf4j;

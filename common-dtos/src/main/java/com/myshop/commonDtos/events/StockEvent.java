@@ -1,6 +1,7 @@
 package com.myshop.commonDtos.events;
 
 import com.myshop.commonDtos.dto.StockRequestDto;
+import com.myshop.commonDtos.events.enums.StockAvailabilityStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

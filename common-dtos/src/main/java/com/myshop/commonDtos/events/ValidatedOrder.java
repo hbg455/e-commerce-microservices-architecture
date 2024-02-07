@@ -1,6 +1,7 @@
 package com.myshop.commonDtos.events;
 
 import com.myshop.commonDtos.dto.OrderRequestDto;
+import com.myshop.commonDtos.dto.ValidatedOrderDto;
 import com.myshop.commonDtos.events.enums.OrderStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,20 +9,19 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
-
 @NoArgsConstructor
 @Data
-public class OrderEvent implements Event , Serializable {
+public class ValidatedOrder implements Event , Serializable {
     private static final long serialVersionUID = 1L;
     private UUID eventId = UUID.randomUUID();
     private Date eventDate = new Date();
     private UUID orderNumber;
-    private OrderRequestDto orderRequestDto;
+    private ValidatedOrderDto validatedOrderDto;
     private OrderStatus orderStatus;
 
-    public OrderEvent(UUID orderNumber ,OrderRequestDto orderRequestDto, OrderStatus orderStatus) {
+    public ValidatedOrder(UUID orderNumber ,ValidatedOrderDto validatedOrderDto, OrderStatus orderStatus) {
         this.orderNumber = orderNumber;
-        this.orderRequestDto = orderRequestDto;
+        this.validatedOrderDto = validatedOrderDto;
         this.orderStatus = orderStatus;
     }
 
