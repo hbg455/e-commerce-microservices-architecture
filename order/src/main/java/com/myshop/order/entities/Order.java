@@ -37,6 +37,12 @@ public class Order extends AbstractMappedEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @Column(name = "order_fee", columnDefinition = "decimal")
+    private Double orderFee;
+
+    @Column(name = "user_id")
+    private Integer userId;
+
     @OneToMany(cascade = CascadeType.ALL , fetch = FetchType.LAZY)
     private List<OrderLine> orderLineItemsList;
 }

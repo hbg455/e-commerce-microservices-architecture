@@ -2,6 +2,7 @@ package com.myshop.order.helper;
 
 import com.myshop.order.dto.OrderDto;
 import com.myshop.order.dto.OrderLineDto;
+import com.myshop.order.dto.UserDto;
 import com.myshop.order.entities.Order;
 import com.myshop.order.entities.OrderLine;
 
@@ -42,6 +43,9 @@ public interface OrderMappingHelper {
                 .orderId(order.getOrderId())
                 .orderNumber(order.getOrderNumber())
                 .orderStatus(order.getOrderStatus())
+                .userDto(UserDto.builder()
+                        .UserId(order.getUserId())
+                        .build())
                 .orderLineItemsList(orderLineDTOs)
                 .build();
     }
