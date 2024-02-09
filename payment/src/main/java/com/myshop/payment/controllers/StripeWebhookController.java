@@ -1,8 +1,10 @@
 package com.myshop.payment.controllers;
 
+import com.myshop.payment.services.PaymentService;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.*;
 import com.stripe.net.Webhook;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class StripeWebhookController {
+
+    private final PaymentService paymentService;
+
 
     @Value("${api.stripe.webhook.secret}")
     private String endPointSecret ;
@@ -59,6 +65,8 @@ public class StripeWebhookController {
                     log.info("Payment for  id {}, for the amount {}, succeeded" , paymentIntent.getId(), paymentIntent.getAmount() );
                     // Then define and call a method to handle the successful payment intent.
                     // handlePaymentIntentSucceeded(paymentIntent);
+                    paymentService.handlePayment(paymentIntent.getId(), "succeeded");
+
                     break;
                 case "payment_method.attached":
                     PaymentMethod paymentMethod = (PaymentMethod) stripeObject;

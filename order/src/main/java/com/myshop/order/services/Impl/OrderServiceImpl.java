@@ -105,8 +105,14 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(OrderMappingHelper::mapToDto)
                 .map(o -> {
-                    o.setUserDto(this.restTemplate.getForObject("http://localhost:8081/user/user/" + o.getUserDto().UserId(),
-                            UserDto.class));
+
+                    if ( o.getUserDto().UserId() == null){
+                        o.setUserDto(null);
+                    }else {
+                        o.setUserDto(this.restTemplate.getForObject("http://USERS/api/v1/auth/user/" + o.getUserDto().UserId(), UserDto.class));
+
+                    }
+
                     return o;
 
                 })
@@ -120,8 +126,14 @@ public class OrderServiceImpl implements OrderService {
         return this.orderRepository.findById(orderId)
                 .map(OrderMappingHelper::mapToDto)
                 .map(o -> {
-                    o.setUserDto(this.restTemplate.getForObject("http://localhost:8081/user/user/" + o.getUserDto().UserId(),
-                            UserDto.class));
+
+                    if ( o.getUserDto().UserId() == null){
+                        o.setUserDto(null);
+                    }else {
+                        o.setUserDto(this.restTemplate.getForObject("http://USERS/api/v1/auth/user/" + o.getUserDto().UserId(), UserDto.class));
+
+                    }
+
                     return o;
 
                 })

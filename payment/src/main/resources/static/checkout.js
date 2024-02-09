@@ -3,6 +3,10 @@ const stripe = Stripe("pk_test_51Ofk94DjFawQhX49Jt84ieRty86ITa9u2U3tM6LSdEkyWNO9
 
 // The items the customer wants to buy
 const items = [{ id: "xl-tshirt" }];
+const amount = 49;
+const currency = "usd";
+const description = "Example charge";
+const orderId = "order_12345";
 
 let elements;
 
@@ -18,7 +22,7 @@ async function initialize() {
     const response = await fetch("/create-payment-intent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
+        body: JSON.stringify({ amount, currency, description ,orderId }),
     });
     const { clientSecret } = await response.json();
 

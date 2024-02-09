@@ -21,6 +21,7 @@ public interface OrderMappingHelper {
                 .orderId(orderDto.getOrderId())
                 .orderNumber(orderDto.getOrderNumber())
                 .orderStatus(orderDto.getOrderStatus())
+                .userId(orderDto.getUserDto().UserId())
                 .orderLineItemsList( orderLines)
                 .build();
     }

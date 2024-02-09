@@ -23,11 +23,14 @@ public final class Payment extends AbstractMappedEntity implements Serializable 
     @Column(name = "payment_id", unique = true, nullable = false, updatable = false)
     private Integer paymentId;
 
-    @Column(name = "order_id")
-    private Integer orderId;
+    @Column(name = "payment_intent_id")
+    private String paymentIntentId;
 
-    @Column(name = "is_payed")
-    private Boolean isPayed;
+    @Column(name = "order_id")
+    private String orderId;
+
+    @Column(name = "description")
+    private String description;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "payment_status")
