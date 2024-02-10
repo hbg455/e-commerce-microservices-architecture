@@ -27,7 +27,7 @@ public final class Payment extends AbstractMappedEntity implements Serializable 
     private String paymentIntentId;
 
     @Column(name = "order_id")
-    private String orderId;
+    private Integer orderId;
 
     @Column(name = "description")
     private String description;

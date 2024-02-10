@@ -11,6 +11,6 @@ public interface PaymentService {
     PaymentDto findById(final Integer paymentId);
     PaymentDto save(final CreatePayment paymentDto, final String paymentIntentId);
     PaymentDto update(final PaymentDto paymentDto);
-    PaymentDto handlePayment(final String paymentIntendId , final String paymentStatus);
+    void handlePayment(final String paymentIntendId , final String paymentStatus);
     void deleteById(final Integer paymentId);
 }

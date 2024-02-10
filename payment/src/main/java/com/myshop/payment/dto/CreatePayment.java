@@ -12,7 +12,7 @@ public class CreatePayment {
     Double amount;
 
     @SerializedName("orderId")
-    String orderId;
+    Integer orderId;
 
     @SerializedName("currency")
     String currency;
@@ -28,11 +28,11 @@ public class CreatePayment {
         return amount;
     }
 
-    public String getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
 
