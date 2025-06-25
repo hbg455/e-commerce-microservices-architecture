@@ -21,6 +21,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Build all modules
+        run: mvn clean install
+
       - name: Grant execute permission to mvnw
         run: chmod +x ./mvnw
       
