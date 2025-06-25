@@ -1,0 +1,30 @@
+pipeline {
+  agent any
+  environment {
+    REGISTRY = "ghcr.io/your-org"
+    IMAGE_TAG = "${env.BUILD_NUMBER}"
+  }
+  stages {
+    stage('Build & Test') {
+      steps {
+        sh './mvnw clean verify'
+      }
+    }
+    stage('Docker Build & Push') {
+      steps {
+        script {
+          def services = ['api-gateway', 'users', 'products', 'order', 'payment', 'config-server', 'eureka-server']
+          for (svc in services) {
+            sh "docker build -f docker/${svc}.Dockerfile -t $REGISTRY/${svc}:$IMAGE_TAG ${svc}"
+            sh "docker push $REGISTRY/${svc}:$IMAGE_TAG"
+          }
+        }
+      }
+    }
+    stage('Deploy to Kubernetes') {
+      steps {
+        sh 'helm upgrade --install shopify ./helm --set global.imageTag=$IMAGE_TAG --set global.imageRepository=$REGISTRY'
+      }
+    }
+  }
+}
