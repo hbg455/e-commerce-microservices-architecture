@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [api-gateway, users, products, order, payment, config-server, eureka-server]
+        service: [api-gateway, common-dtos, users, products, order, payment, config-server, eureka-server]
     steps:
       - uses: actions/checkout@v4
 
