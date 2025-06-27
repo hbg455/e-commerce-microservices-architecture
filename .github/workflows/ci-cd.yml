@@ -31,6 +31,8 @@ jobs:
         run: |
           cd ${{ matrix.service }}
           ../mvnw clean verify
+        env:
+          SPRING_CLOUD_CONFIG_ENABLED: false
 
       - name: Build Docker image
         run: |
