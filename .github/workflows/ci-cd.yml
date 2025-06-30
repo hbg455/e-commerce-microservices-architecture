@@ -42,7 +42,7 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: GHCR_PAT.io
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
 
@@ -62,9 +62,15 @@ jobs:
       - name: Set up Helm
         uses: azure/setup-helm@v4
 
+      - name: Write kubeconfig to file
+        run: echo "${{ secrets.KUBECONFIG }}" > ${{ github.workspace }}/kubeconfig
+
+      - name: Set KUBECONFIG env var
+        run: echo "KUBECONFIG=${{ github.workspace }}/kubeconfig" >> $GITHUB_ENV
+        
       - name: Deploy with Helm
         env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+          KUBECONFIG: ${{ github.workspace }}/kubeconfig
         run: |
           helm upgrade --install shopify ./helm \
             --set global.imageTag=${{ github.sha }} \
