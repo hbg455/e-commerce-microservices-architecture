@@ -27,6 +27,8 @@ public class OrderDto  implements Serializable {
 
     private OrderStatus orderStatus;
 
+    private int totalQuantity;
+
     @JsonProperty("user")
  //   @JsonInclude(JsonInclude.Include.NON_NULL)
     private UserDto userDto;
@@ -34,5 +36,6 @@ public class OrderDto  implements Serializable {
     @JsonProperty("orderLine")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<OrderLineDto> orderLineItemsList;
+
 
 }
